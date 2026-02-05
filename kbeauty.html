@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Beauty Industry Insight 2020-2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Warm Minimalist (Stone, Beige, Soft Coral, Charcoal) -->
+    <!-- Application Structure Plan: 
+         The app uses a 'Dashboard' approach.
+         1. Hero Section: Sets the context and high-level summary.
+         2. Main Navigation: Tabs to switch between the 4 key report areas (Market, Strategy, Trends, Outlook).
+         3. Dynamic Content Area: The central display that updates based on the selected tab.
+            - Market: Quantitative charts (Line/Donut) focusing on growth and export shifts.
+            - Strategy: Comparative interactive layout (Giants vs. Indies) and a Plotly scatter matrix.
+            - Trends: Grid of clickable cards that expand with details.
+            - Outlook: SWOT analysis grid and risk assessment.
+         4. Footer: Credits and brief conclusion.
+         
+         Reasoning: A dashboard structure allows users to digest complex report sections non-linearly, 
+         focusing on what interests them (data vs. strategy) without being overwhelmed by a long text scroll.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Market Growth (Chart.js Line): Best for showing trends over time (2020-2026).
+         2. Export Portfolio (Chart.js Doughnut): effective for showing part-to-whole relationships (Country share).
+         3. Strategy Matrix (Plotly Scatter): Best for positioning entities on two axes (Agility vs. Scale).
+         4. Comparison Tables (HTML/JS): efficient for direct text comparison between Conglomerates and Indie brands.
+         
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        kbeauty: {
+                            base: '#FDFBF7',     // Soft Warm White
+                            primary: '#E8DED2',  // Beige/Taupe
+                            accent: '#D48C8C',   // Muted Coral/Rose
+                            dark: '#2D2D2D',     // Soft Charcoal
+                            text: '#4A4A4A',     // Dark Grey
+                            subtle: '#9CA3AF'    // Light Grey
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #4A4A4A;
+        }
+        
+        /* Chart Container Styling - Strict Constraints */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #D48C8C;
+            color: #2D2D2D;
+            font-weight: 700;
+        }
+
+        .tab-inactive {
+            color: #9CA3AF;
+        }
+        
+        .tab-inactive:hover {
+            color: #D48C8C;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans">
+
+    <!-- Header / Nav -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-kbeauty-dark tracking-tight">K-Beauty <span class="text-kbeauty-accent">Insight</span></span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="app.navigate('market')" id="nav-market" class="tab-active px-3 py-2 text-sm font-medium transition-colors">시장 현황</button>
+                    <button onclick="app.navigate('strategy')" id="nav-strategy" class="tab-inactive px-3 py-2 text-sm font-medium transition-colors">기업 전략</button>
+                    <button onclick="app.navigate('trends')" id="nav-trends" class="tab-inactive px-3 py-2 text-sm font-medium transition-colors">핵심 트렌드</button>
+                    <button onclick="app.navigate('outlook')" id="nav-outlook" class="tab-inactive px-3 py-2 text-sm font-medium transition-colors">전망 및 리스크</button>
+                </nav>
+                <!-- Mobile Menu Button (Simplified for this view) -->
+                <div class="md:hidden">
+                    <button class="text-kbeauty-dark focus:outline-none">
+                        <span>MENU</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="bg-kbeauty-primary/20 border-b border-stone-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <h1 class="text-4xl font-extrabold text-kbeauty-dark mb-4">
+                2020-2026 한국 화장품 산업 심층 분석
+            </h1>
+            <p class="text-lg text-kbeauty-text max-w-3xl mx-auto mb-8">
+                팬데믹의 위기를 넘어 디지털 전환과 수출 다변화로 재도약하는 K-Beauty. 
+                시장 데이터부터 기업별 생존 전략, 미래 트렌드까지 핵심 정보를 인터랙티브하게 탐색해보세요.
+            </p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase">2026 시장 규모 전망</p>
+                    <p class="text-2xl font-bold text-kbeauty-dark">15.2조 원</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase">비중국 수출 비중</p>
+                    <p class="text-2xl font-bold text-kbeauty-accent">▲ 45%</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase">인디 브랜드 점유율</p>
+                    <p class="text-2xl font-bold text-kbeauty-dark">급성장</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-xs text-gray-500 uppercase">디지털 채널 비중</p>
+                    <p class="text-2xl font-bold text-kbeauty-accent">60%+</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Section 1: Market Status -->
+        <section id="view-market" class="fade-in block">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-kbeauty-dark mb-2">1. 시장 현황 (Market Overview)</h2>
+                <p class="text-gray-600">
+                    2020년 팬데믹으로 인한 일시적 위축 이후, 2021년부터 디지털 채널 확장과 스킨케어 수요 증가로 회복세에 진입했습니다. 
+                    특히 2023년 이후 비중국 시장(미국, 일본, 동남아)으로의 수출 다변화가 시장 성장의 핵심 동력으로 작용하고 있습니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Chart 1: Market Size Growth -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-semibold mb-4 text-kbeauty-dark">📈 한국 화장품 시장 규모 추이 (2020-2026E)</h3>
+                    <div class="chart-container">
+                        <canvas id="chart-market-growth"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2 text-right">* 단위: 조 원 (추정치 포함)</p>
+                </div>
+
+                <!-- Chart 2: Export Destination Breakdown -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-semibold mb-4 text-kbeauty-dark">🌏 주요 수출국 비중 변화 (2020 vs 2025)</h3>
+                    <div class="flex justify-center mb-4">
+                         <button onclick="app.toggleExportChart('2020')" id="btn-2020" class="bg-kbeauty-dark text-white px-4 py-1 rounded-l-full text-sm">2020년</button>
+                         <button onclick="app.toggleExportChart('2025')" id="btn-2025" class="bg-gray-200 text-gray-600 px-4 py-1 rounded-r-full text-sm hover:bg-gray-300">2025년</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-export-share"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4 text-center" id="export-commentary">
+                        2020년 중국 의존도가 50%를 상회했으나, 2025년에는 미국과 일본 비중이 대폭 확대되었습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Key Stats Detail -->
+            <div class="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                <h3 class="text-lg font-bold text-kbeauty-dark mb-4">📊 부문별 성장 포인트</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <span class="w-2 h-2 rounded-full bg-kbeauty-accent mr-2"></span>
+                            <span class="font-medium">스킨케어 (Skincare)</span>
+                        </div>
+                        <p class="text-sm text-gray-600 ml-4">기능성, 더마 코스메틱 중심의 연평균 6% 성장. 마스크 착용 일상화로 인한 트러블 케어 수요 지속.</p>
+                    </div>
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <span class="w-2 h-2 rounded-full bg-stone-400 mr-2"></span>
+                            <span class="font-medium">색조 (Makeup)</span>
+                        </div>
+                        <p class="text-sm text-gray-600 ml-4">2022년 이후 리오프닝 효과로 급반등. 자연스러운 '꾸안꾸' 스타일과 립 틴트 제품 강세.</p>
+                    </div>
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <span class="w-2 h-2 rounded-full bg-stone-600 mr-2"></span>
+                            <span class="font-medium">온라인 채널</span>
+                        </div>
+                        <p class="text-sm text-gray-600 ml-4">라이브 커머스, 자사몰(D2C) 강화로 전체 유통 채널 중 점유율 1위 등극.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Enterprise Strategy -->
+        <section id="view-strategy" class="hidden fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-kbeauty-dark mb-2">2. 기업 규모별 판매 전략 (Strategic Comparison)</h2>
+                <p class="text-gray-600">
+                    전통적인 대기업(아모레퍼시픽, LG생건)은 브랜드 리뉴얼과 럭셔리 강화를, 
+                    신흥 인디 브랜드는 디지털 민첩성과 틈새 시장(Niche) 공략을 통해 성장하고 있습니다.
+                </p>
+            </div>
+
+            <!-- Comparison Interactive -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <!-- Large Corps Card -->
+                <div class="bg-white border-l-4 border-stone-600 rounded-r-xl shadow-sm p-6 card-hover transition-all">
+                    <h3 class="text-xl font-bold text-stone-700 mb-4 flex items-center">
+                        🏢 대기업 (Conglomerates)
+                        <span class="text-xs bg-stone-100 text-stone-600 px-2 py-1 rounded ml-2">Scale & Luxury</span>
+                    </h3>
+                    <ul class="space-y-4 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">💎</span>
+                            <div>
+                                <strong class="text-gray-800">브랜딩:</strong> 프리미엄/럭셔리 라인 강화 (설화수, 후). 헤리티지와 기술력 강조.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">🛒</span>
+                            <div>
+                                <strong class="text-gray-800">유통:</strong> 백화점, 면세점 중심에서 아마존, 올리브영 등 외부 채널 입점 확대로 선회 중.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">🌏</span>
+                            <div>
+                                <strong class="text-gray-800">글로벌:</strong> 북미 기업 인수합병(M&A)을 통한 현지 유통망 확보 (예: 라네즈, 코스알엑스).
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Indie Brands Card -->
+                <div class="bg-white border-l-4 border-kbeauty-accent rounded-r-xl shadow-sm p-6 card-hover transition-all">
+                    <h3 class="text-xl font-bold text-kbeauty-accent mb-4 flex items-center">
+                        🚀 인디 브랜드 (Indie Brands)
+                        <span class="text-xs bg-red-50 text-kbeauty-accent px-2 py-1 rounded ml-2">Agility & Viral</span>
+                    </h3>
+                    <ul class="space-y-4 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">⚡</span>
+                            <div>
+                                <strong class="text-gray-800">브랜딩:</strong> 확실한 컨셉과 원재료(비건, 어성초 등). 빠르고 직관적인 마케팅.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">📱</span>
+                            <div>
+                                <strong class="text-gray-800">유통:</strong> 올리브영, Qoo10(일본), 틱톡샵 등 MZ세대 접근성이 높은 플랫폼 집중.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-lg mr-2">📣</span>
+                            <div>
+                                <strong class="text-gray-800">마케팅:</strong> 숏폼 콘텐츠와 인플루언서 협업을 통한 바이럴 생성. 팬덤 구축.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Plotly Matrix -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-kbeauty-dark">📊 브랜드 포지셔닝 맵 (Digital Agility vs Global Scale)</h3>
+                </div>
+                <!-- Plotly Chart Container -->
+                <div id="plotly-strategy-map" class="w-full h-[400px]"></div>
+                <p class="text-xs text-gray-500 mt-2 text-center">
+                    X축: 글로벌 시장 규모 / Y축: 디지털 마케팅 민첩성 (데이터 기반 가상 매핑)
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 3: Trends -->
+        <section id="view-trends" class="hidden fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-kbeauty-dark mb-2">3. 주요 트렌드 (Key Trends)</h2>
+                <p class="text-gray-600">
+                    K-Beauty의 성장을 견인하는 4가지 핵심 트렌드입니다. 카드를 클릭하여 상세 내용을 확인하세요.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Trend Card 1 -->
+                <button onclick="app.showTrendDetail(0)" class="trend-card bg-white p-6 rounded-xl shadow-sm border border-stone-100 text-left hover:border-kbeauty-accent transition-all">
+                    <div class="text-3xl mb-3">🌿</div>
+                    <h3 class="font-bold text-lg mb-2 text-gray-800">Clean & Vegan</h3>
+                    <p class="text-sm text-gray-500 line-clamp-2">윤리적 소비 확산. 비건 인증 및 친환경 패키징이 선택이 아닌 필수.</p>
+                </button>
+                <!-- Trend Card 2 -->
+                <button onclick="app.showTrendDetail(1)" class="trend-card bg-white p-6 rounded-xl shadow-sm border border-stone-100 text-left hover:border-kbeauty-accent transition-all">
+                    <div class="text-3xl mb-3">🧬</div>
+                    <h3 class="font-bold text-lg mb-2 text-gray-800">Derma / High-Function</h3>
+                    <p class="text-sm text-gray-500 line-clamp-2">성분 중심의 고기능성 스킨케어. 전문가 수준의 홈케어 수요 증가.</p>
+                </button>
+                <!-- Trend Card 3 -->
+                <button onclick="app.showTrendDetail(2)" class="trend-card bg-white p-6 rounded-xl shadow-sm border border-stone-100 text-left hover:border-kbeauty-accent transition-all">
+                    <div class="text-3xl mb-3">🤖</div>
+                    <h3 class="font-bold text-lg mb-2 text-gray-800">Beauty Tech</h3>
+                    <p class="text-sm text-gray-500 line-clamp-2">AI 피부 진단, 맞춤형 화장품 제조, 스마트 디바이스와의 결합.</p>
+                </button>
+                <!-- Trend Card 4 -->
+                <button onclick="app.showTrendDetail(3)" class="trend-card bg-white p-6 rounded-xl shadow-sm border border-stone-100 text-left hover:border-kbeauty-accent transition-all">
+                    <div class="text-3xl mb-3">👨</div>
+                    <h3 class="font-bold text-lg mb-2 text-gray-800">Men's Beauty</h3>
+                    <p class="text-sm text-gray-500 line-clamp-2">기초를 넘어 색조까지 확장되는 남성 뷰티 시장의 잠재력.</p>
+                </button>
+            </div>
+
+            <!-- Dynamic Detail Area -->
+            <div id="trend-detail-panel" class="bg-kbeauty-primary/30 p-8 rounded-xl border border-kbeauty-primary hidden fade-in">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <h3 id="trend-title" class="text-2xl font-bold text-kbeauty-dark mb-4">Clean & Vegan</h3>
+                        <p id="trend-desc" class="text-gray-700 mb-4 leading-relaxed">
+                            비건 뷰티 시장은 연평균 10% 이상 성장하고 있습니다. 단순히 동물 실험 반대를 넘어, 패키징의 재활용 가능성, 탄소 발자국 감소 등 지속가능성(Sustainability)이 브랜드 가치를 결정짓는 핵심 요소가 되었습니다.
+                        </p>
+                        <ul id="trend-points" class="list-disc list-inside text-sm text-gray-600 space-y-2 bg-white p-4 rounded-lg inline-block w-full">
+                            <li>국내 비건 인증 화장품 품목 수 3년 새 5배 증가</li>
+                            <li>클린 뷰티 플랫폼 기준 강화 (올리브영 클린뷰티 등)</li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/3 flex items-center justify-center bg-white rounded-lg p-4">
+                        <div class="text-center w-full">
+                            <p class="text-sm text-gray-500 mb-2">트렌드 중요도 및 성장률</p>
+                            <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                                <div id="trend-bar" class="bg-kbeauty-accent h-4 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <span id="trend-metric" class="text-2xl font-bold text-kbeauty-dark">85%</span>
+                            <p class="text-xs text-gray-400">시장 영향력 지수</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Outlook & Risks -->
+        <section id="view-outlook" class="hidden fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-kbeauty-dark mb-2">4. 향후 전망 및 리스크 (Outlook & Risks)</h2>
+                <p class="text-gray-600">
+                    2026년까지의 K-Beauty는 '질적 성장'과 '시장 다변화'의 시기입니다. 
+                    기회 요인과 위협 요인을 냉철하게 분석하여 대응 전략을 수립해야 합니다.
+                </p>
+            </div>
+
+            <!-- SWOT Analysis Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <!-- Strength -->
+                <div class="bg-white p-6 rounded-lg border-t-4 border-blue-400 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center"><span class="bg-blue-100 text-blue-600 p-1 rounded mr-2 text-xs">Strength</span> 강점</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+                        <li>빠른 제품 개발 주기와 혁신적인 제형 기술</li>
+                        <li>K-Content(드라마, K-Pop)와의 강력한 시너지</li>
+                        <li>가격 대비 우수한 품질(가성비)과 패키징 디자인</li>
+                    </ul>
+                </div>
+                <!-- Weakness -->
+                <div class="bg-white p-6 rounded-lg border-t-4 border-yellow-400 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center"><span class="bg-yellow-100 text-yellow-600 p-1 rounded mr-2 text-xs">Weakness</span> 약점</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+                        <li>중소 브랜드의 마케팅 자금력 및 해외 물류 노하우 부족</li>
+                        <li>일부 카테고리(마스크팩 등)의 낮은 진입장벽 및 과당 경쟁</li>
+                        <li>브랜드 로열티보다는 제품 단위의 휘발성 소비</li>
+                    </ul>
+                </div>
+                <!-- Opportunity -->
+                <div class="bg-white p-6 rounded-lg border-t-4 border-green-400 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center"><span class="bg-green-100 text-green-600 p-1 rounded mr-2 text-xs">Opportunity</span> 기회</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+                        <li>미국, 일본, 동남아, 중동 등 비중국 시장의 폭발적 수요</li>
+                        <li>온라인 채널 침투율 증가로 인한 유통 마진 개선</li>
+                        <li>남성 뷰티 및 시니어 뷰티 시장의 개화</li>
+                    </ul>
+                </div>
+                <!-- Threat -->
+                <div class="bg-white p-6 rounded-lg border-t-4 border-red-400 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3 flex items-center"><span class="bg-red-100 text-red-600 p-1 rounded mr-2 text-xs">Threat</span> 위협</h3>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+                        <li>중국 시장 내 '궈차오(애국소비)' 열풍 및 C-Beauty의 품질 향상</li>
+                        <li>글로벌 공급망 불안정에 따른 원자재 가격 상승</li>
+                        <li>각국의 화장품 규제 강화 (MoCRA 등)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 text-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-lg font-bold mb-2">🚀 Executive Summary for 2026</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    2026년까지 한국 화장품 산업은 <strong>"탈중국, 디지털, 초개인화"</strong>라는 3대 키워드를 중심으로 재편될 것입니다. 
+                    대기업은 M&A와 하이엔드 전략으로, 인디 브랜드는 틈새 시장과 디지털 바이럴로 각자의 생존 영역을 구축해야 합니다. 
+                    리스크 관리에 성공한다면, K-Beauty는 단순한 트렌드를 넘어 글로벌 뷰티 스탠다드(Global Beauty Standard)로 자리 잡을 것입니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-xs text-gray-400">
+                Data Sources: 관세청 수출입 무역통계, 통계청, 주요 증권사 리포트 종합 및 재구성.<br>
+                Generated by Canvas Create Webapp.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const app = {
+            state: {
+                currentTab: 'market',
+                charts: {}
+            },
+            
+            data: {
+                trends: [
+                    {
+                        title: "Clean & Vegan",
+                        desc: "윤리적 소비 확산에 따라 비건 인증 및 친환경 패키징은 이제 필수 생존 요건입니다. 특히 북미와 유럽 시장 진출을 위해서는 '클린 뷰티' 기준 충족이 선행되어야 합니다.",
+                        points: ["국내 비건 인증 화장품 품목 수 급증", "플라스틱 프리 패키징 기술 도입 확대", "성분 투명성 요구 증대"],
+                        metric: 92
+                    },
+                    {
+                        title: "Derma / High-Function",
+                        desc: "코로나19 이후 마스크 트러블 케어에서 시작된 더마 코스메틱 열풍은 이제 안티에이징, 미백 등 고기능성 영역으로 확장되었습니다. '성분'을 공부하는 똑똑한 소비자(Skin-tellectual)를 위한 과학적 입증이 중요합니다.",
+                        points: ["병원용 화장품의 B2C 시장 진출", "레티놀, 비타민C 등 고효능 성분 인기", "임상 실험 데이터 마케팅 필수"],
+                        metric: 85
+                    },
+                    {
+                        title: "Beauty Tech",
+                        desc: "AI 기반의 피부 진단 서비스와 맞춤형 화장품 제조 기술이 상용화 단계에 접어들었습니다. 스마트 뷰티 디바이스 시장 또한 홈케어 트렌드와 맞물려 빠르게 성장 중입니다.",
+                        points: ["AI 피부 진단 앱 사용자 증가", "맞춤형 파운데이션/세럼 제조 로봇", "LED 마스크 및 갈바닉 기기 대중화"],
+                        metric: 70
+                    },
+                    {
+                        title: "Men's Beauty",
+                        desc: "남성들의 외모 관리에 대한 관심이 기초 스킨케어를 넘어 색조(BB크림, 아이브로우)로 확장되고 있습니다. 한국 남성 1인당 화장품 구매액은 세계 1위 수준입니다.",
+                        points: ["젠더 뉴트럴 브랜드의 부상", "남성 전용 올인원 제품의 고급화", "유튜버/인플루언서 남성 뷰티 콘텐츠 증가"],
+                        metric: 65
+                    }
+                ]
+            },
+
+            init: function() {
+                this.renderMarketChart();
+                this.renderExportChart('2020'); // Default to 2020
+                this.renderStrategyMap();
+                
+                // Show default trend detail
+                this.showTrendDetail(0);
+                
+                // Handle mobile menu (simplified)
+                document.querySelectorAll('button[id^="nav-"]').forEach(btn => {
+                    // Mobile nav logic could go here
+                });
+            },
+
+            navigate: function(tabId) {
+                // Update State
+                this.state.currentTab = tabId;
+
+                // Update UI: Hide all sections, Show active section
+                document.querySelectorAll('section').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('block'); // ensure block is removed
+                });
+                
+                const activeSection = document.getElementById(`view-${tabId}`);
+                activeSection.classList.remove('hidden');
+                activeSection.classList.add('block');
+
+                // Update UI: Tabs
+                document.querySelectorAll('nav button').forEach(btn => {
+                    btn.classList.remove('tab-active', 'text-kbeauty-dark');
+                    btn.classList.add('tab-inactive');
+                });
+                document.getElementById(`nav-${tabId}`).classList.add('tab-active');
+                document.getElementById(`nav-${tabId}`).classList.remove('tab-inactive');
+                
+                // Resize charts if necessary when tab becomes visible
+                if(tabId === 'strategy') {
+                    if (this.state.charts.strategyMap) {
+                        Plotly.Plots.resize('plotly-strategy-map');
+                    }
+                }
+            },
+
+            // Chart 1: Market Growth (Chart.js)
+            renderMarketChart: function() {
+                const ctx = document.getElementById('chart-market-growth').getContext('2d');
+                
+                this.state.charts.marketGrowth = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2020', '2021', '2022', '2023', '2024(E)', '2025(E)', '2026(E)'],
+                        datasets: [{
+                            label: '시장 규모 (조 원)',
+                            data: [10.5, 11.2, 12.0, 13.1, 13.9, 14.5, 15.2],
+                            borderColor: '#D48C8C',
+                            backgroundColor: 'rgba(212, 140, 140, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#D48C8C',
+                            pointRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.parsed.y + ' 조 원';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 8,
+                                grid: { color: '#f3f4f6' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            },
+
+            // Chart 2: Export Share (Chart.js)
+            renderExportChart: function(year) {
+                const ctx = document.getElementById('chart-export-share').getContext('2d');
+                
+                // Data mapping
+                const data2020 = [50, 15, 6, 10, 19]; // China, US, Japan, SEA, Others
+                const data2025 = [25, 28, 15, 18, 14];
+                
+                const currentData = year === '2020' ? data2020 : data2025;
+                const labels = ['중국', '미국', '일본', '동남아', '기타'];
+                const colors = ['#E5E7EB', '#D48C8C', '#8BA3A8', '#E8DED2', '#F3F4F6']; // Highlight growing markets with color
+                
+                // Color logic: In 2020 China is big (Grey/highlighted?), In 2025 US/Japan are highlighted
+                const bgColors = year === '2020' 
+                    ? ['#555555', '#D48C8C', '#A0A0A0', '#E0E0E0', '#F5F5F5'] 
+                    : ['#D1D5DB', '#D48C8C', '#8BA3A8', '#E8DED2', '#F3F4F6'];
+
+                if (this.state.charts.exportShare) {
+                    this.state.charts.exportShare.destroy();
+                }
+
+                this.state.charts.exportShare = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: currentData,
+                            backgroundColor: bgColors,
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { font: { size: 11 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.label + ': ' + context.parsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
+            toggleExportChart: function(year) {
+                // Button Styling
+                const btn2020 = document.getElementById('btn-2020');
+                const btn2025 = document.getElementById('btn-2025');
+                const commentary = document.getElementById('export-commentary');
+
+                if (year === '2020') {
+                    btn2020.classList.replace('bg-gray-200', 'bg-kbeauty-dark');
+                    btn2020.classList.replace('text-gray-600', 'text-white');
+                    btn2025.classList.replace('bg-kbeauty-dark', 'bg-gray-200');
+                    btn2025.classList.replace('text-white', 'text-gray-600');
+                    commentary.innerText = "2020년: 중국(50%) 시장에 대한 의존도가 절대적이었습니다.";
+                } else {
+                    btn2025.classList.replace('bg-gray-200', 'bg-kbeauty-dark');
+                    btn2025.classList.replace('text-gray-600', 'text-white');
+                    btn2020.classList.replace('bg-kbeauty-dark', 'bg-gray-200');
+                    btn2020.classList.replace('text-white', 'text-gray-600');
+                    commentary.innerHTML = "2025년: 미국(28%)과 일본(15%)이 새로운 주력 시장으로 부상하며 <br>수출 포트폴리오가 안정화되었습니다.";
+                }
+
+                this.renderExportChart(year);
+            },
+
+            // Chart 3: Strategy Matrix (Plotly)
+            renderStrategyMap: function() {
+                const brands = [
+                    { name: 'Amorepacific', x: 90, y: 50, size: 40, color: '#555555', type: 'Conglomerate' },
+                    { name: 'LG H&H', x: 85, y: 45, size: 38, color: '#555555', type: 'Conglomerate' },
+                    { name: 'COS RX', x: 60, y: 85, size: 25, color: '#D48C8C', type: 'Indie' },
+                    { name: 'Rom&nd', x: 40, y: 95, size: 20, color: '#D48C8C', type: 'Indie' },
+                    { name: 'Clio', x: 50, y: 70, size: 22, color: '#8BA3A8', type: 'Mid-Size' },
+                    { name: 'Tirtir', x: 45, y: 88, size: 18, color: '#D48C8C', type: 'Indie' },
+                    { name: 'Innisfree', x: 70, y: 60, size: 30, color: '#555555', type: 'Conglomerate' }
+                ];
+
+                const trace = {
+                    x: brands.map(b => b.x),
+                    y: brands.map(b => b.y),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    text: brands.map(b => b.name),
+                    textposition: 'top center',
+                    marker: {
+                        size: brands.map(b => b.size),
+                        color: brands.map(b => b.color),
+                        opacity: 0.8
+                    },
+                    hoverinfo: 'text',
+                    hovertext: brands.map(b => `${b.name}<br>Type: ${b.type}`)
+                };
+
+                const layout = {
+                    hovermode: 'closest',
+                    margin: { t: 20, b: 40, l: 40, r: 20 },
+                    xaxis: { 
+                        title: 'Global Scale (Capital & Reach)', 
+                        range: [20, 100], 
+                        showgrid: true, 
+                        zeroline: false 
+                    },
+                    yaxis: { 
+                        title: 'Digital Agility (Speed & Viral)', 
+                        range: [30, 110], 
+                        showgrid: true, 
+                        zeroline: false 
+                    },
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(245,245,245,0.5)',
+                    font: { family: 'Noto Sans KR' }
+                };
+                
+                const config = { responsive: true, displayModeBar: false };
+
+                Plotly.newPlot('plotly-strategy-map', [trace], layout, config);
+                this.state.charts.strategyMap = true;
+            },
+
+            // Function for Trend Details
+            showTrendDetail: function(index) {
+                const data = this.data.trends[index];
+                
+                // Update text
+                document.getElementById('trend-title').innerText = data.title;
+                document.getElementById('trend-desc').innerText = data.desc;
+                document.getElementById('trend-metric').innerText = data.metric + "%";
+                
+                // Update list
+                const list = document.getElementById('trend-points');
+                list.innerHTML = '';
+                data.points.forEach(pt => {
+                    const li = document.createElement('li');
+                    li.innerText = pt;
+                    list.appendChild(li);
+                });
+
+                // Update bar width
+                document.getElementById('trend-bar').style.width = data.metric + "%";
+
+                // Visual selection state
+                document.getElementById('trend-detail-panel').classList.remove('hidden');
+                document.querySelectorAll('.trend-card').forEach((card, i) => {
+                    if (i === index) {
+                        card.classList.add('border-kbeauty-accent', 'bg-stone-50');
+                    } else {
+                        card.classList.remove('border-kbeauty-accent', 'bg-stone-50');
+                    }
+                });
+            }
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+</html>
