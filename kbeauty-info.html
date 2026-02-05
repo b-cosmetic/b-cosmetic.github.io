@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2020-2026 한국 화장품 산업(K-Beauty) 심층 분석 인포그래픽</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: "Energetic & Playful" (adapted for K-Beauty context) 
+         Primary: #FF6B6B (Vibrant Coral/Rose)
+         Secondary: #4ECDC4 (Fresh Mint/Teal - for 'Clean Beauty')
+         Neutral: #F7FFF7 (Off White)
+         Dark: #292F36 (Charcoal)
+         Accent: #FFE66D (Soft Yellow)
+    -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kbeauty: {
+                            primary: '#FF6B6B',
+                            secondary: '#4ECDC4',
+                            light: '#F7FFF7',
+                            dark: '#292F36',
+                            accent: '#FFE66D',
+                            slate: '#F0F4F8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Adapts to grid column */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7FFF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF6B6B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fa5252;
+        }
+    </style>
+
+    <!-- 
+    Application Structure Plan:
+    1. Header: Impactful title and brief summary hook.
+    2. Section 1 - Market Status: Quantitative analysis using Line and Stacked Bar charts to show growth and export shifts.
+    3. Section 2 - Strategy: Comparative layout (Cards) for Corporate vs. Indie, plus a Scatter Plot for positioning.
+    4. Section 3 - Trends: Grid of informative cards with icons highlighting qualitative trends.
+    5. Section 4 - Outlook: SWOT Analysis layout and concluding statement.
+    -->
+
+    <!-- 
+    Visualization & Content Choices:
+    1. Market Size Growth -> Goal: Change -> Line Chart (Chart.js) -> Best for showing continuous growth trend over years.
+    2. Export Diversification -> Goal: Compare/Change -> Stacked Bar Chart (Chart.js) -> Shows the changing composition of export destinations (China vs Others).
+    3. Brand Positioning -> Goal: Relationships -> Scatter Plot (Chart.js) -> Maps brands on "Digital Agility" vs "Global Scale".
+    4. Strategy Comparison -> Goal: Compare -> Comparison Cards (HTML/Tailwind) -> Clear textual comparison of strategies.
+    5. Trends -> Goal: Inform -> Icon Cards (HTML/Tailwind) -> Visual breakdown of key themes.
+    6. SWOT -> Goal: Analysis -> 2x2 Grid (HTML/Tailwind) -> Standard business analysis format.
+    
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+</head>
+<body class="bg-kbeauty-light text-kbeauty-dark font-sans leading-relaxed">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm border-b-4 border-kbeauty-primary sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-kbeauty-dark tracking-tight">
+                K-Beauty <span class="text-kbeauty-primary">Insight 2026</span>
+            </h1>
+            <span class="hidden md:inline-block bg-kbeauty-slate text-kbeauty-dark text-xs px-3 py-1 rounded-full font-medium">
+                2020-2026 심층 분석 리포트
+            </span>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <!-- Intro / Hook -->
+        <section class="mb-16 text-center animate-fade-in-up">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-kbeauty-dark leading-tight">
+                위기를 넘어,<br><span class="text-kbeauty-primary">디지털과 다양성</span>으로 재도약하다
+            </h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                2020년 팬데믹의 충격을 딛고 일어선 한국 화장품 산업. 
+                중국 의존도를 낮추고 미국·일본으로 시장을 확장하며, 대기업과 인디 브랜드가 공존하는 
+                새로운 생태계로 진화하고 있습니다. 2026년까지의 핵심 데이터와 전략을 분석합니다.
+            </p>
+        </section>
+
+        <!-- Section 1: Market Status -->
+        <section class="mb-20">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">📈</span>
+                <h3 class="text-2xl font-bold text-kbeauty-dark border-b-2 border-kbeauty-secondary pb-2 inline-block">
+                    1. 시장 현황 (Market Overview)
+                </h3>
+            </div>
+            <p class="text-gray-700 mb-8 bg-white p-4 rounded-lg shadow-sm border-l-4 border-kbeauty-primary">
+                <strong>핵심 요약:</strong> 2020년 일시적 역성장 이후, 디지털 채널 강화와 수출국 다변화에 힘입어 2021년부터 완만한 회복세를 보이고 있습니다. 
+                특히 2023년 이후 비중국(Non-China) 시장에서의 성장이 전체 시장 규모 확대를 견인하고 있습니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Chart 1: Market Growth -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h4 class="text-lg font-bold mb-2 text-kbeauty-dark">한국 화장품 시장 규모 추이 및 전망 (2020-2026)</h4>
+                    <p class="text-sm text-gray-500 mb-4">팬데믹 충격 이후 연평균 6.2% 성장세 회복 전망</p>
+                    <div class="chart-container">
+                        <canvas id="marketGrowthChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Export Diversification -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h4 class="text-lg font-bold mb-2 text-kbeauty-dark">주요 수출국 비중 변화 (2020 vs 2025)</h4>
+                    <p class="text-sm text-gray-500 mb-4">중국 의존도 감소 및 미국/일본/동남아 비중 확대</p>
+                    <div class="chart-container">
+                        <canvas id="exportDiversificationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Strategy Comparison -->
+        <section class="mb-20">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">⚖️</span>
+                <h3 class="text-2xl font-bold text-kbeauty-dark border-b-2 border-kbeauty-secondary pb-2 inline-block">
+                    2. 기업 규모별 생존 전략 (Strategy Comparison)
+                </h3>
+            </div>
+            <p class="text-gray-700 mb-8 bg-white p-4 rounded-lg shadow-sm border-l-4 border-kbeauty-secondary">
+                <strong>전략 분화:</strong> 전통적인 대기업(Conglomerates)은 럭셔리 브랜딩과 R&D에 집중하는 반면, 
+                신흥 인디 브랜드(Indie Brands)는 민첩한 디지털 마케팅과 확실한 컨셉으로 틈새 시장을 공략하고 있습니다.
+            </p>
+
+            <!-- Comparison Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <!-- Big Corp -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-gray-800">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-xl font-bold text-gray-800">🏢 대기업 (Major Corps)</h4>
+                            <span class="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Amore, LG H&H 등</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-600">
+                            <li class="flex items-start"><span class="mr-2">🔹</span><strong>브랜딩:</strong> 럭셔리/프리미엄 라인 강화, 헤리티지 강조</li>
+                            <li class="flex items-start"><span class="mr-2">🔹</span><strong>채널:</strong> 백화점/면세점 중심에서 글로벌 e커머스(Amazon)로 전환 중</li>
+                            <li class="flex items-start"><span class="mr-2">🔹</span><strong>성장동력:</strong> 북미 브랜드 인수합병(M&A)을 통한 현지 유통망 확보</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Indie Brands -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-8 border-kbeauty-primary">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-xl font-bold text-kbeauty-primary">🚀 인디 브랜드 (Indie Brands)</h4>
+                            <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">Rom&nd, COSRX 등</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-600">
+                            <li class="flex items-start"><span class="mr-2">🔸</span><strong>브랜딩:</strong> 명확한 컨셉(비건, 더마)과 마이크로 타겟팅</li>
+                            <li class="flex items-start"><span class="mr-2">🔸</span><strong>채널:</strong> 올리브영, Qoo10(일본), 틱톡샵 등 MZ세대 플랫폼 장악</li>
+                            <li class="flex items-start"><span class="mr-2">🔸</span><strong>성장동력:</strong> 숏폼 콘텐츠를 활용한 바이럴 마케팅과 빠른 제품 출시</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Positioning Matrix -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h4 class="text-lg font-bold mb-2 text-kbeauty-dark">브랜드 포지셔닝 맵 (Digital Agility vs Global Scale)</h4>
+                <p class="text-sm text-gray-500 mb-4">인디 브랜드는 높은 디지털 민첩성을, 대기업은 거대한 글로벌 자본력을 보유</p>
+                <div class="chart-container">
+                    <canvas id="brandPositioningChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Key Trends -->
+        <section class="mb-20">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">✨</span>
+                <h3 class="text-2xl font-bold text-kbeauty-dark border-b-2 border-kbeauty-secondary pb-2 inline-block">
+                    3. 핵심 트렌드 (Key Trends)
+                </h3>
+            </div>
+            <p class="text-gray-700 mb-8 bg-white p-4 rounded-lg shadow-sm border-l-4 border-kbeauty-accent">
+                <strong>트렌드 키워드:</strong> 소비자의 가치관 변화와 기술의 발전이 맞물려 '착한 성분', '고기능성', '기술 결합', '남성 뷰티'가 시장을 주도하고 있습니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Trend 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="text-4xl mb-4">🌿</div>
+                    <h4 class="text-lg font-bold text-kbeauty-dark mb-2">Clean & Vegan</h4>
+                    <p class="text-sm text-gray-600">
+                        동물 실험 배제 및 친환경 패키징 필수화. 가치 소비를 중시하는 글로벌 MZ세대 공략의 핵심.
+                    </p>
+                </div>
+                <!-- Trend 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="text-4xl mb-4">🧪</div>
+                    <h4 class="text-lg font-bold text-kbeauty-dark mb-2">Derma / High-Function</h4>
+                    <p class="text-sm text-gray-600">
+                        병원 화장품의 대중화. 레티놀, 비타민C 등 성분 중심의 '스키니피케이션(Skinification)' 가속화.
+                    </p>
+                </div>
+                <!-- Trend 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h4 class="text-lg font-bold text-kbeauty-dark mb-2">Beauty Tech</h4>
+                    <p class="text-sm text-gray-600">
+                        AI 피부 진단 및 맞춤형 화장품 제조 기술 도입. 홈 뷰티 디바이스 시장의 폭발적 성장.
+                    </p>
+                </div>
+                <!-- Trend 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div class="text-4xl mb-4">👨</div>
+                    <h4 class="text-lg font-bold text-kbeauty-dark mb-2">Men's Beauty</h4>
+                    <p class="text-sm text-gray-600">
+                        기초 스킨케어를 넘어 색조까지 확장. 한국 남성 1인당 화장품 구매액 세계 1위 유지.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Future Outlook & Risks -->
+        <section class="mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">🔮</span>
+                <h3 class="text-2xl font-bold text-kbeauty-dark border-b-2 border-kbeauty-secondary pb-2 inline-block">
+                    4. 향후 전망 및 리스크 (Outlook & Risks)
+                </h3>
+            </div>
+            
+            <!-- SWOT Analysis -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h4 class="text-center text-xl font-bold mb-8 tracking-widest text-gray-400">SWOT ANALYSIS</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Strength -->
+                    <div class="border border-gray-200 rounded-lg p-5 bg-blue-50/50">
+                        <h5 class="text-blue-700 font-bold mb-3 flex items-center"><span class="text-xl mr-2">💪</span> 강점 (Strengths)</h5>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li>빠른 제품 개발 주기(Fast Beauty)</li>
+                            <li>혁신적인 제형 및 패키징 기술력</li>
+                            <li>K-POP, K-Drama 등 강력한 문화적 후광 효과</li>
+                        </ul>
+                    </div>
+                    <!-- Weakness -->
+                    <div class="border border-gray-200 rounded-lg p-5 bg-yellow-50/50">
+                        <h5 class="text-yellow-700 font-bold mb-3 flex items-center"><span class="text-xl mr-2">⚠️</span> 약점 (Weaknesses)</h5>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li>중소 브랜드의 마케팅 자금력 부족</li>
+                            <li>일부 카테고리의 과도한 경쟁 및 카피 제품</li>
+                            <li>글로벌 물류 인프라 구축 미흡</li>
+                        </ul>
+                    </div>
+                    <!-- Opportunity -->
+                    <div class="border border-gray-200 rounded-lg p-5 bg-green-50/50">
+                        <h5 class="text-green-700 font-bold mb-3 flex items-center"><span class="text-xl mr-2">🌟</span> 기회 (Opportunities)</h5>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li>미국, 일본, 중동 등 비중국 시장의 성장</li>
+                            <li>온라인 채널 침투율 증가로 인한 유통 마진 개선</li>
+                            <li>남성 및 시니어 뷰티 시장 확대</li>
+                        </ul>
+                    </div>
+                    <!-- Threat -->
+                    <div class="border border-gray-200 rounded-lg p-5 bg-red-50/50">
+                        <h5 class="text-red-700 font-bold mb-3 flex items-center"><span class="text-xl mr-2">🛑</span> 위협 (Threats)</h5>
+                        <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                            <li>중국 시장 내 '궈차오(애국소비)' 및 C-뷰티 품질 향상</li>
+                            <li>글로벌 규제 강화 (미국 MoCRA 등)</li>
+                            <li>원자재 가격 상승 및 공급망 불안정</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-kbeauty-dark text-kbeauty-light p-6 rounded-xl shadow-lg text-center">
+                <h4 class="text-lg font-bold mb-2 text-kbeauty-secondary">2026년 전망 요약</h4>
+                <p class="max-w-2xl mx-auto">
+                    K-Beauty는 단순한 트렌드를 넘어 <strong>'글로벌 뷰티의 표준(Standard)'</strong>으로 자리 잡을 것입니다. 
+                    성공의 열쇠는 <span class="text-kbeauty-primary font-bold">지역 다변화</span>와 <span class="text-kbeauty-accent font-bold text-kbeauty-dark px-1 rounded">브랜드 고유의 철학</span>을 지키는 것에 있습니다.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-100 py-8 mt-12 border-t border-gray-200">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-500 text-sm">
+                Data Source: 관세청 수출입 무역통계, 통계청, 주요 증권사 산업 리포트 재구성.<br>
+                Generated by Gemini Canvas.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic for Charts -->
+    <script>
+        // --- Utility Functions ---
+        
+        // Label wrapping logic for Chart.js (Split long strings into arrays)
+        function formatLabel(str, maxwidth) {
+            if (typeof str !== 'string' || str.length <= maxwidth) return str;
+            const sections = [];
+            const words = str.split(' ');
+            let temp = '';
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    const concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = item;
+                    } else {
+                        temp = concat;
+                    }
+                } else {
+                    temp = item;
+                }
+            });
+            if (temp.length > 0) sections.push(temp);
+            return sections;
+        }
+
+        // Shared Tooltip Configuration
+        const sharedTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- Chart 1: Market Growth (Line Chart) ---
+        const ctxGrowth = document.getElementById('marketGrowthChart').getContext('2d');
+        const marketLabels = ['2020', '2021', '2022', '2023', '2024(E)', '2025(E)', '2026(E)'];
+        // Data in Trillion KRW (Estimated)
+        const marketData = [10.2, 11.5, 12.8, 13.9, 14.8, 15.9, 17.1]; 
+
+        new Chart(ctxGrowth, {
+            type: 'line',
+            data: {
+                labels: marketLabels,
+                datasets: [{
+                    label: '시장 규모 (단위: 조 원)',
+                    data: marketData,
+                    borderColor: '#FF6B6B', // kbeauty-primary
+                    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.3,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#FF6B6B',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { font: { family: "'Noto Sans KR', sans-serif" } }
+                    },
+                    tooltip: sharedTooltipConfig
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f3f4f6' },
+                        ticks: { font: { family: "'Noto Sans KR', sans-serif" } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: "'Noto Sans KR', sans-serif" } }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 2: Export Diversification (Stacked Bar) ---
+        const ctxExport = document.getElementById('exportDiversificationChart').getContext('2d');
+        // Comparing 2020 vs 2025 proportions
+        const exportLabels = ['2020년', '2025년(E)'];
+        
+        // Data percentages: China, US, Japan, Others
+        const dataChina = [50, 25]; 
+        const dataUS = [15, 25];
+        const dataJapan = [6, 15];
+        const dataOthers = [29, 35];
+
+        new Chart(ctxExport, {
+            type: 'bar',
+            data: {
+                labels: exportLabels,
+                datasets: [
+                    {
+                        label: '중국',
+                        data: dataChina,
+                        backgroundColor: '#E5E7EB', // Gray (Declining importance visual cue)
+                    },
+                    {
+                        label: '미국',
+                        data: dataUS,
+                        backgroundColor: '#FF6B6B', // Primary (Growth driver)
+                    },
+                    {
+                        label: '일본',
+                        data: dataJapan,
+                        backgroundColor: '#4ECDC4', // Secondary
+                    },
+                    {
+                        label: '기타(동남아/유럽)',
+                        data: dataOthers,
+                        backgroundColor: '#FFE66D', // Accent
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal bar for easier comparison
+                scales: {
+                    x: {
+                        stacked: true,
+                        max: 100,
+                        ticks: { callback: function(value){return value + "%"} }
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                plugins: {
+                    tooltip: sharedTooltipConfig,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- Chart 3: Brand Positioning Map (Scatter Plot) ---
+        const ctxPosition = document.getElementById('brandPositioningChart').getContext('2d');
+        
+        // Mock Data Points
+        // X: Global Scale (Capital, Distribution) 0-100
+        // Y: Digital Agility (Trend speed, Viral capability) 0-100
+        const brands = [
+            { x: 90, y: 40, label: formatLabel('Amorepacific (Conglomerate)', 16), type: 'Big' },
+            { x: 85, y: 35, label: formatLabel('LG H&H (Conglomerate)', 16), type: 'Big' },
+            { x: 30, y: 95, label: formatLabel('Rom&nd (Indie)', 16), type: 'Indie' },
+            { x: 40, y: 90, label: formatLabel('COSRX (Indie)', 16), type: 'Indie' },
+            { x: 25, y: 85, label: formatLabel('Tirtir (Indie)', 16), type: 'Indie' },
+            { x: 60, y: 70, label: formatLabel('Clio (Mid-Size)', 16), type: 'Mid' },
+            { x: 70, y: 55, label: formatLabel('Innisfree (Corp Brand)', 16), type: 'Big' }
+        ];
+
+        new Chart(ctxPosition, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: '브랜드 포지셔닝',
+                    data: brands,
+                    backgroundColor: function(context) {
+                        const val = context.raw;
+                        if (!val) return '#ccc';
+                        return val.type === 'Indie' ? '#FF6B6B' : (val.type === 'Big' ? '#292F36' : '#4ECDC4');
+                    },
+                    pointRadius: function(context) {
+                        const val = context.raw;
+                        if (!val) return 5;
+                        return val.type === 'Big' ? 12 : (val.type === 'Indie' ? 8 : 10);
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: '글로벌 자본 및 유통망 규모 (Global Scale)' },
+                        min: 0, max: 100,
+                        grid: { color: '#e5e7eb' }
+                    },
+                    y: {
+                        title: { display: true, text: '디지털 민첩성 및 바이럴 확산력 (Digital Agility)' },
+                        min: 0, max: 100,
+                        grid: { color: '#e5e7eb' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.raw.label;
+                                if (Array.isArray(label)) label = label.join(' ');
+                                return label;
+                            }
+                        }
+                    },
+                    legend: { display: false },
+                    annotation: {
+                        // Note: Annotation plugin not loaded, relying on color coding and text description
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

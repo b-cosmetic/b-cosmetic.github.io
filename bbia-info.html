@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(주)삐아: K-뷰티 색조의 미래</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #FDFBF7; color: #2D3748; }
+        
+        /* Chart Container Styling - Critical for Responsiveness */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Custom Utilities */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #9B2C2C 0%, #E53E3E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+    <!-- Chosen Palette: Cosmetic Chic -->
+    <!-- Primary: #9B2C2C (Chili Red), Secondary: #2F855A (Vegan Green), Background: #FDFBF7 (Warm Alabaster) -->
+    
+    <!-- Narrative Plan:
+         1. Hero: Brand Identity & Key Success Metrics (10M+ Sales).
+         2. Brand Portfolio: Comparing the duality of Bbia (Color) vs Edit.B (Clean).
+         3. Growth Trajectory: Line chart showing steady growth index.
+         4. Channel Shift: Stacked bar showing the strategic move from Online D2C to H&B/Global.
+         5. Product Mix: Doughnut chart highlighting category dominance.
+         6. Marketing Funnel: HTML-based flow showing the viral loop strategy.
+         7. Global Outlook: Map-style list of key regions.
+    -->
+    
+    <!-- Visualization Choices:
+         1. Sales Growth: Line Chart (Chart.js) -> Show trend over time.
+         2. Channel Strategy: Stacked Bar (Chart.js) -> Compare composition changes (2020 vs 2024).
+         3. Category Mix: Doughnut Chart (Chart.js) -> Show proportion.
+         4. Marketing Process: HTML/CSS Flowchart -> Explain viral mechanism (No SVG/Mermaid).
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Header / Hero Section -->
+    <header class="w-full bg-white shadow-sm border-b border-red-100 py-12 px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -mr-16 -mt-16"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -ml-16 -mb-16"></div>
+        
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <span class="inline-block py-1 px-3 rounded-full bg-red-100 text-red-800 text-xs font-bold tracking-wider mb-4">CORPORATE ANALYSIS</span>
+            <h1 class="text-5xl md:text-6xl font-black mb-4 tracking-tight text-slate-900">BBIA<span class="text-red-700">.</span></h1>
+            <p class="text-xl md:text-2xl font-light text-slate-600 mb-8">The Color Master: From D2C Legend to Global K-Beauty Icon</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="p-4 bg-white rounded-xl shadow-md border-t-4 border-red-600">
+                    <div class="text-3xl font-bold text-red-700">2004</div>
+                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">Founded Year</div>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-md border-t-4 border-red-600">
+                    <div class="text-3xl font-bold text-red-700">10M+</div>
+                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">Lip Tints Sold</div>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-md border-t-4 border-green-600">
+                    <div class="text-3xl font-bold text-green-700">3+</div>
+                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">Core Global Markets</div>
+                </div>
+                <div class="p-4 bg-white rounded-xl shadow-md border-t-4 border-slate-600">
+                    <div class="text-3xl font-bold text-slate-700">No.1</div>
+                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">Repurchase Rate</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- Section 1: Brand Portfolio Strategy -->
+        <section>
+            <div class="mb-8 border-l-8 border-red-700 pl-4">
+                <h2 class="text-3xl font-bold text-slate-800">Two-Track Brand Strategy</h2>
+                <p class="text-slate-600 mt-2 text-lg">Targeting diverse consumer needs through specialized brand identities.</p>
+            </div>
+            <p class="mb-6 text-slate-600 leading-relaxed">
+                (주)삐아는 명확하게 구분된 두 개의 브랜드를 통해 시장을 공략합니다. 메인 브랜드인 <strong>Bbia</strong>는 고발색 색조 제품으로 트렌드에 민감한 MZ세대를, 
+                서브 브랜드 <strong>Edit.B</strong>는 성분을 중시하는 클린 뷰티 소비자를 타겟팅합니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Bbia Card -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-red-100 transform hover:-translate-y-1 transition duration-300">
+                    <div class="bg-red-900 p-6 text-white">
+                        <h3 class="text-2xl font-bold">BBIA (삐아)</h3>
+                        <p class="text-red-200 text-sm mt-1">High-Performance Color Cosmetics</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2 text-xl">🎯</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Target</span>
+                                    <p class="text-sm text-slate-600">MZ Generation, Cosmetic Maniacs (Koduk)</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2 text-xl">✨</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Key Value</span>
+                                    <p class="text-sm text-slate-600">Vivid Pigmentation, Long-lasting, Cost-effective</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2 text-xl">🏆</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Hero Product</span>
+                                    <p class="text-sm text-slate-600">Last Velvet Lip Tint (Steady Seller)</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Edit.B Card -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-green-100 transform hover:-translate-y-1 transition duration-300">
+                    <div class="bg-green-800 p-6 text-white">
+                        <h3 class="text-2xl font-bold">EDIT.B (에디트비)</h3>
+                        <p class="text-green-200 text-sm mt-1">Clean & Vegan Beauty</p>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2 text-xl">🎯</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Target</span>
+                                    <p class="text-sm text-slate-600">Eco-conscious Consumers, Sensitive Skin</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2 text-xl">🌿</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Key Value</span>
+                                    <p class="text-sm text-slate-600">Vegan Certified, Skin Filtering, Mild Ingredients</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2 text-xl">💧</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Hero Product</span>
+                                    <p class="text-sm text-slate-600">Sunset Pot (Multi-use Balm), Skin Filtering Toner</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Product Category Mix -->
+        <section class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-1">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4">Category Dominance</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                        삐아는 <strong>립(Lip)</strong>과 <strong>아이(Eye)</strong> 메이크업 카테고리에서 압도적인 강세를 보입니다. 
+                        특히 틴트와 아이라이너는 브랜드의 인지도를 견인하는 핵심 엔진입니다.
+                    </p>
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                        <div class="text-red-800 font-bold text-lg mb-1">Color Focus</div>
+                        <p class="text-xs text-red-600">Sales are heavily concentrated on color cosmetics, reflecting the "Color Master" identity.</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-2">
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Financial & Channel Growth -->
+        <section>
+            <div class="mb-8 border-l-8 border-slate-700 pl-4">
+                <h2 class="text-3xl font-bold text-slate-800">Growth & Channel Shift</h2>
+                <p class="text-slate-600 mt-2 text-lg">Transitioning from Online D2C to a robust Omni-channel structure.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Growth Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-md">
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">Revenue Growth Index</h3>
+                    <p class="text-xs text-slate-500 mb-4">Steady upward trajectory driven by global expansion (Base 2020 = 100).</p>
+                    <div class="chart-container h-64">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Channel Strategy Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-md">
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">Sales Channel Redistribution</h3>
+                    <p class="text-xs text-slate-500 mb-4">Strategic pivot towards H&B stores (Olive Young) and Global markets.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-6 text-sm text-center text-slate-500 bg-slate-50 p-3 rounded-lg max-w-2xl mx-auto">
+                * 2024년은 H&B 채널과 해외 수출 비중이 각각 30% 수준으로 확대되며, 특정 채널 의존도를 낮추고 안정적인 수익 구조를 형성할 것으로 전망됩니다.
+            </p>
+        </section>
+
+        <!-- Section 4: Marketing & Global Strategy -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Marketing Funnel (Flowchart) -->
+            <div class="lg:col-span-1 bg-gradient-to-br from-red-900 to-red-800 rounded-2xl p-6 text-white shadow-xl">
+                <h3 class="text-xl font-bold mb-6 border-b border-red-700 pb-2">Viral Loop Strategy</h3>
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">📱</span>
+                            <div class="font-bold text-sm uppercase tracking-wide text-red-100">Discovery</div>
+                        </div>
+                        <p class="text-xs text-red-50">Short-form contents (TikTok, Reels) & Influencer partnerships initiate the buzz.</p>
+                    </div>
+                    
+                    <!-- Arrow -->
+                    <div class="flex justify-center">
+                        <span class="text-white/50 text-xl">↓</span>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">🎨</span>
+                            <div class="font-bold text-sm uppercase tracking-wide text-red-100">Visual Proof</div>
+                        </div>
+                        <p class="text-xs text-red-50">High-res swatches & Personal Color (Warm/Cool) guides reduce purchase anxiety.</p>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="flex justify-center">
+                        <span class="text-white/50 text-xl">↓</span>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="bg-white/20 backdrop-blur-md p-4 rounded-xl border border-white/40 shadow-inner">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">🛒</span>
+                            <div class="font-bold text-sm uppercase tracking-wide text-white">Conversion</div>
+                        </div>
+                        <p class="text-xs text-white">Cost-effective pricing leads to immediate purchase & "Color Collecting".</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Map & Outlook -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Global Box -->
+                <div class="bg-white rounded-2xl shadow-md p-6 border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Global Expansion Roadmap</h3>
+                    <p class="text-slate-600 mb-6 text-sm">
+                        K-뷰티의 격전지인 아시아 시장을 중심으로 온/오프라인 동시 확장을 추진하고 있습니다.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center hover:bg-red-50 hover:border-red-200 transition">
+                            <div class="text-3xl mb-2">🇰🇷</div>
+                            <div class="font-bold text-slate-700">KOREA</div>
+                            <div class="text-xs text-slate-500 mt-1">H&B (Olive Young)<br>Flagship Stores</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center hover:bg-red-50 hover:border-red-200 transition">
+                            <div class="text-3xl mb-2">🇯🇵</div>
+                            <div class="font-bold text-slate-700">JAPAN</div>
+                            <div class="text-xs text-slate-500 mt-1">Qoo10 / Rakuten<br>Loft / Plaza (Offline)</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center hover:bg-red-50 hover:border-red-200 transition">
+                            <div class="text-3xl mb-2">🇻🇳</div>
+                            <div class="font-bold text-slate-700">VIETNAM</div>
+                            <div class="text-xs text-slate-500 mt-1">Shopee / Lazada<br>K-Beauty Trend Leader</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Future Outlook -->
+                <div class="bg-white rounded-2xl shadow-md p-6 border-t-4 border-green-600">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-green-100 text-green-700 p-1 rounded mr-2 text-sm">FUTURE</span>
+                        Sustainable Growth Engine
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-700 mb-2">Clean Beauty Expansion</h4>
+                            <p class="text-sm text-slate-600">
+                                비건 브랜드 'Edit.B'의 라인업 확장을 통해 스킨케어 및 베이스 메이크업 시장 점유율을 확대합니다.
+                            </p>
+                        </div>
+                        <div class="flex-1 border-t sm:border-t-0 sm:border-l border-slate-100 pt-4 sm:pt-0 sm:pl-6">
+                            <h4 class="font-bold text-slate-700 mb-2">Offline Experience</h4>
+                            <p class="text-sm text-slate-600">
+                                팝업 스토어 및 H&B 매대 점유율 확대로 소비자가 직접 발색을 경험할 수 있는 접점을 강화합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm py-8 border-t border-slate-200 mt-12">
+            <p>© 2024 Bbia Corporate Analysis Infographic. Data based on simulated market reports.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Data Handling & Label Wrapping ---
+        function wrapLabel(str, maxChars) {
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    backgroundColor: 'rgba(45, 55, 72, 0.9)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: "'Noto Sans KR', sans-serif", size: 12 },
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                }
+            }
+        };
+
+        // --- Chart 1: Category Mix (Doughnut) ---
+        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lip Makeup', 'Eye Makeup', 'Face/Base', 'Others'],
+                datasets: [{
+                    data: [55, 30, 10, 5],
+                    backgroundColor: ['#9B2C2C', '#C53030', '#FC8181', '#E2E8F0'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { position: 'right' } // Legend on right for doughnut
+                }
+            }
+        });
+
+        // --- Chart 2: Growth Index (Line) ---
+        const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctxGrowth, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024 (E)'],
+                datasets: [{
+                    label: 'Growth Index (Base 100)',
+                    data: [100, 115, 130, 155, 180],
+                    borderColor: '#9B2C2C',
+                    backgroundColor: 'rgba(155, 44, 44, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#9B2C2C',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        display: false, // Hide Y axis for cleaner look
+                        min: 80
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 3: Channel Shift (Stacked Bar) ---
+        const channelLabels = ['2020 Structure', '2024 Structure (Est)'];
+        // Wrap labels if needed (though these are short enough)
+        const processedChannelLabels = channelLabels.map(l => wrapLabel(l, 16));
+
+        const ctxChannel = document.getElementById('channelChart').getContext('2d');
+        new Chart(ctxChannel, {
+            type: 'bar',
+            data: {
+                labels: processedChannelLabels,
+                datasets: [
+                    {
+                        label: 'Online (D2C/Open Market)',
+                        data: [70, 40],
+                        backgroundColor: '#CBD5E0', // Muted gray for decreasing
+                        barThickness: 40
+                    },
+                    {
+                        label: 'H&B (Olive Young)',
+                        data: [15, 30],
+                        backgroundColor: '#E53E3E', // Bright red for growth
+                        barThickness: 40
+                    },
+                    {
+                        label: 'Global Export',
+                        data: [15, 30],
+                        backgroundColor: '#9B2C2C', // Deep red for growth
+                        barThickness: 40
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: { stacked: true, grid: { display: false } },
+                    y: { stacked: true, display: false }
+                },
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            ...commonOptions.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                return ` ${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
